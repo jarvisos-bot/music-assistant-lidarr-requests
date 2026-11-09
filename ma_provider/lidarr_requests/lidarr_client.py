@@ -19,6 +19,7 @@ class Match:
     present: bool = False
     monitored: bool = False
     note: str = ""
+    artist_mbid: str = ""
 
 
 def clean_url(value: str) -> str:
@@ -108,6 +109,7 @@ class Lidarr:
                 artist.get("artistName", "") if isinstance(artist, dict) else "",
                 mbid, bool(x.get("id")), bool(x.get("monitored")),
                 f'Song "{song}" -> whole album' if song else "",
+                artist.get("foreignArtistId", "") if isinstance(artist, dict) else "",
             ))
             if len(result) >= limit:
                 break

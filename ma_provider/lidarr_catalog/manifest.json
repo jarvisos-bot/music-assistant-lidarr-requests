@@ -1,0 +1,15 @@
+{
+  "type": "music",
+  "stage": "beta",
+  "domain": "lidarr_catalog",
+  "name": "Lidarr Discovery (request only)",
+  "description": "Read-only global search of Lidarr artists and albums. Requires the Lidarr Requests plugin; catalogue results cannot be played.",
+  "codeowners": [
+    "@jarvisos-bot"
+  ],
+  "requirements": [],
+  "documentation": "https://github.com/jarvisos-bot/music-assistant-lidarr-requests",
+  "multi_instance": false,
+  "builtin": false,
+  "icon": "search"
+}
