@@ -198,8 +198,25 @@ class Lidarr:
         if not item.mbid:
             raise LidarrError("Cannot request an item without a MusicBrainz identifier")
         if item.kind == "artist":
+            # Existing unmonitored artists must be requestable too.
             if item.present:
-                return f"{item.title} is already in Lidarr; change monitoring in Lidarr if needed"
+                candidates = await self.api(
+                    "GET", "artist/lookup", params={"term": item.mbid}
+                )
+                current = next(
+                    (a for a in candidates if a.get("foreignArtistId") == item.mbid),
+                    None,
+                )
+                if not current or not current.get("id"):
+                    raise LidarrError("Existing artist could not be reloaded")
+                if current.get("monitored"):
+                    return f"Artist already Wanted: {item.title}"
+                data = dict(current)
+                data["monitored"] = True
+                # Keep existing album monitor selections unchanged. No search.
+                await self.api("PUT", f"artist/{int(current['id'])}",
+                               data=data, timeout=25)
+                return f"Artist added to Wanted: {item.title}"
             # Adding future releases does not trigger historical bulk downloads.
             policy = "all" if artist_policy == "all" else "future"
             await self._ensure_artist(item.mbid, root, monitor=policy)

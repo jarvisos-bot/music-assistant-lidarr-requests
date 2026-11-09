@@ -7,7 +7,9 @@ A community Music Assistant 2.10+ integration with two components: native Lidarr
 - Search for artists and albums in the existing Lidarr catalogue, including from Music Assistant global search through the optional Lidarr Discovery source.
 - Discover recordings using MusicBrainz; resolve a song to a containing album.
 - Add new artists or albums to Lidarr Wanted; never create duplicates.
-- Enable monitoring on existing unmonitored albums.
+- Enable monitoring on existing unmonitored albums and artists.
+- Display [Wanted] / [Not Wanted] against artists and albums in global search.
+- From an item originating in Lidarr Discovery, use Music Assistant's native Add to Library action to request that artist/album in Lidarr Wanted; requests do not trigger download-client searches.
 - Read the Lidarr queue, download state and percent progress.
 - Use an existing Lidarr root's default quality and metadata profiles.
 
@@ -15,7 +17,7 @@ A community Music Assistant 2.10+ integration with two components: native Lidarr
 
 Lidarr monitors artists and albums, not individual songs. A requested song therefore adds the selected album, clearly labelled before the request. Discovery can return several releases of the same song.
 
-Music Assistant does not offer a generic third-party API to inject request buttons beside every playable track. The **request buttons** live under Settings -> Plugins -> Lidarr Requests. The **Lidarr Discovery (request only)** companion source contributes non-playable artists and albums to global search. Search results are catalogue entries, not downloaded audio, and do not automatically populate your Library. The global search source cannot monitor individual tracks.
+Music Assistant does not offer a generic third-party API to inject request buttons beside every playable track. The dedicated request buttons live under Settings -> Plugins -> Lidarr Requests; the native Add to Library action on a Lidarr Discovery search result also requests it in Lidarr Wanted. Music Assistant currently does not provide a third-party API for relabelling this context menu button to "Add to Wanted". The **Lidarr Discovery (request only)** companion source contributes non-playable artists and albums to global search. Search results are catalogue entries, not downloaded audio, and do not automatically populate your Library. The global search source cannot monitor individual tracks. Removing a Music Assistant library entry deliberately does not remove or delete anything from Lidarr.
 
 No API command starts a download client or bypasses existing Lidarr schedules. It only requests monitored items.
 
@@ -35,7 +37,7 @@ Keep all existing data and music volumes. Confirm the Python version/path for yo
 
 Enter the Lidarr URL (reachable from the server, e.g. http://nas:8686) and API key through the Music Assistant setup form. Music Assistant encrypts the API key at rest; it never goes into this Git repository. Then add **Settings -> Music Sources -> Lidarr Discovery (request only)**. This companion source uses the existing Lidarr Requests plugin's in-memory client, so no second key is requested or stored.
 
-To use: search for an artist or album globally, then open the plugin options to request the desired result. In plugin settings, choose Song/Album/Artist, enter a query, save the search field, select Search, review the result, and tap Add to Wanted. Select Refresh download progress to show current Lidarr queue activity.
+To use: search for an artist or album globally, open the result originating from Lidarr Discovery, and choose Add to Library to request it in Lidarr Wanted. Results display [Wanted] or [Not Wanted]; refresh search if status is cached. Alternatively open plugin options to request a desired result. In plugin settings, choose Song/Album/Artist, enter a query, save the search field, select Search, review the result, and tap Add to Wanted. Select Refresh download progress to show current Lidarr queue activity.
 
 ## Security
 

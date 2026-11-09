@@ -94,12 +94,26 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.client.api.call_args.args[:2], ("PUT", "album/8"))
         self.assertTrue(self.client.api.call_args.kwargs["data"]["monitored"])
 
-    async def test_existing_artist_never_modified(self):
+    async def test_existing_monitored_artist_not_modified(self):
+        self.client.api.return_value = [
+            {"id": 15, "foreignArtistId": "artist-id", "monitored": True}
+        ]
         result = await self.client.request(
             lib.Match("artist", "Already Present", "Already Present", "artist-id", present=True)
         )
-        self.assertIn("already in Lidarr", result)
-        self.client.api.assert_not_awaited()
+        self.assertIn("already Wanted", result)
+        self.client.api.assert_awaited_once()
+
+    async def test_existing_unmonitored_artist_added_to_wanted(self):
+        self.client.api.return_value = [
+            {"id": 15, "foreignArtistId": "artist-id", "monitored": False}
+        ]
+        result = await self.client.request(
+            lib.Match("artist", "Example", "Example", "artist-id", present=True)
+        )
+        self.assertIn("added to Wanted", result)
+        self.assertEqual(self.client.api.call_args.args[:2], ("PUT", "artist/15"))
+        self.assertTrue(self.client.api.call_args.kwargs["data"]["monitored"])
 
     async def test_multi_root_requires_selection(self):
         self.client.api.return_value = [{"path": "/a"}, {"path": "/b"}]
