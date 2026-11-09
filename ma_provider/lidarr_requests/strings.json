@@ -1,0 +1,34 @@
+{
+  "setup_flow": {
+    "user": {
+      "title": "Connect to Lidarr",
+      "description": "The API key is encrypted in Music Assistant and never published."
+    }
+  },
+  "config_categories": {
+    "discovery": "Discover music",
+    "request_settings": "Request behaviour",
+    "results": "Results",
+    "status": "Download status"
+  },
+  "config_entries": {
+    "search_kind": {
+      "name": "Find"
+    },
+    "search_query": {
+      "name": "Search query"
+    },
+    "search": {
+      "name": "Search"
+    },
+    "root_folder": {
+      "name": "Music root folder"
+    },
+    "artist_policy": {
+      "name": "Artist monitoring"
+    },
+    "refresh": {
+      "name": "Download progress"
+    }
+  }
+}

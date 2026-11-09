@@ -1,0 +1,15 @@
+{
+  "type": "plugin",
+  "stage": "beta",
+  "domain": "lidarr_requests",
+  "name": "Lidarr Requests",
+  "description": "Discover songs, albums and artists, request wanted items, and inspect downloads.",
+  "codeowners": [
+    "@jarvisos-bot"
+  ],
+  "requirements": [],
+  "documentation": "https://github.com/jarvisos-bot/music-assistant-lidarr-requests",
+  "multi_instance": false,
+  "builtin": false,
+  "icon": "download"
+}
