@@ -47,6 +47,37 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].artist, "Example Artist")
 
+    async def test_song_discovery_prefers_official_release(self):
+        class Context:
+            status = 200
+            async def __aenter__(self):
+                return self
+            async def __aexit__(self, *_):
+                return None
+            async def json(self):
+                return {"recordings": [{
+                    "title": "Sample Song",
+                    "artist-credit": [{"artist": {"name": "Sample Artist"}}],
+                    "releases": [
+                        {"title": "Unreleased Bootleg", "status": "Bootleg",
+                         "release-group": {"primary-type": "Album"}},
+                        {"title": "Official Album", "status": "Official",
+                         "release-group": {"primary-type": "Album"}},
+                    ],
+                }]}
+        class Session:
+            def get(self, *args, **kwargs):
+                return Context()
+        self.client.session = Session()
+        self.client.api.return_value = [{
+            "foreignAlbumId": "mbid-album", "title": "Official Album",
+            "artist": {"artistName": "Sample Artist"},
+        }]
+        hits = await self.client.lookup("song", "Sample Song")
+        self.assertEqual([x.title for x in hits], ["Official Album"])
+        self.assertIn("Sample Song", hits[0].note)
+        self.client.api.assert_awaited_once()
+
     async def test_idempotent_monitored_album(self):
         self.client.api.return_value = [
             {"foreignAlbumId": "album-id", "id": 8, "monitored": True}

@@ -118,7 +118,7 @@ class Lidarr:
         try:
             async with self.session.get(
                 "https://musicbrainz.org/ws/2/recording",
-                params={"query": term, "fmt": "json", "limit": "8"},
+                params={"query": term, "fmt": "json", "limit": "15"},
                 headers={"User-Agent": "MA-Lidarr-Requests/0.1 (public-source plugin)"},
                 timeout=aiohttp.ClientTimeout(total=12),
             ) as response:
@@ -132,7 +132,12 @@ class Lidarr:
         for record in records:
             name = next((x["artist"].get("name", "") for x in record.get("artist-credit", [])
                          if isinstance(x, dict) and x.get("artist")), "")
-            for release in record.get("releases", [])[:2]:
+            for release in record.get("releases", [])[:8]:
+                release_group = release.get("release-group") or {}
+                if release.get("status") not in ("Official", None):
+                    continue
+                if release_group.get("primary-type") not in ("Album", "EP", "Single", None):
+                    continue
                 title = release.get("title", "")
                 key = (name + "/" + title).casefold()
                 if not title or key in searched:
